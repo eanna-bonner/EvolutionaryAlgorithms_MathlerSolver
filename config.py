@@ -20,9 +20,9 @@ class EvolutionConfig:
 class FitnessConfig:
     error_tolerance: float = 0.0       # |v - target| must be <= this
     value_weight: float = 1.0          # -|v - target| * value_weight
-    green_bonus: float = 20.0
-    low_gray_bonus: float = 5.0
-    diversity_bonus_per_symbol: float = 1.0
+    green_bonus: float = 15.0
+    low_gray_bonus: float = 2.0
+    diversity_bonus_per_symbol: float = 2.5
     diversity_min_symbols: int = 5
     hard_consistency: bool = True      # Inconsistent with history = invalid
 

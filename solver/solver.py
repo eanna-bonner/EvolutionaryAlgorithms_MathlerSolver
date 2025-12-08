@@ -6,9 +6,8 @@ from typing import List
 from config import GLOBAL_CONFIG
 from logging_config import get_logger
 from engine import MathlerGame, GuessResult
-from evolution import init_population, run_generation, Individual
+from evolution import init_population, run_generation, Individual, sort_by_fitness
 from fitness import make_eval_population_mathler
-
 
 logger = get_logger(__name__)
 
@@ -67,19 +66,39 @@ def solve_mathler_with_evolution(
         # Ensure final population for this guess is evaluated
         eval_fn(population)
 
-        # Pick best individual
-        best = max(population, key=lambda ind: ind.fitness)
-        if best.expr is None:
-            # Should be rare; fall back to a no-op guess that will be invalid
-            logger.warning("Best individual has no expr; using '0+0+0' as fallback")
-            guess_expr = "0+0+0"  # not necessarily 6 chars, just a placeholder
-        else:
-            guess_expr = best.expr
+        # Find last valid guess (if any)
+        last_valid_guess = None
+        for res in reversed(history):
+            if res.is_valid:
+                last_valid_guess = res.guess
+                break
+
+        # Sort population by fitness (best first)
+        ranked = sort_by_fitness(population)
+
+        # Try the top 5, skipping any that repeat the last valid guess
+        candidate = None
+        for ind in ranked[:5]:
+            print(ind.expr)
+            if ind.expr is None:
+                continue
+            if last_valid_guess is not None and ind.expr == last_valid_guess:
+                continue
+            candidate = ind
+            break
+
+        # Fallback: if no suitable candidate found, use the best anyway
+        if candidate is None:
+            candidate = ranked[0]
+
+        best = candidate
+        guess_expr = best.expr if best.expr is not None else "0+0+0"
 
         logger.info(
-            "Chosen guess %r with fitness=%.3f",
+            "Chosen guess %r with fitness=%.3f (last_valid_guess=%r)",
             guess_expr,
             best.fitness,
+            last_valid_guess,
         )
 
         # Submit guess to the game

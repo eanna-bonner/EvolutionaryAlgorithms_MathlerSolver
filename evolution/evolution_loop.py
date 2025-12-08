@@ -12,7 +12,6 @@ from evolution.crossover import one_point_crossover
 
 logger = get_logger(__name__)
 
-# eval_fn: takes a list of Individuals and mutates their .fitness (and expr)
 EvalFn = Callable[[List[Individual]], None]
 
 
@@ -25,7 +24,7 @@ def run_generation(population: List[Individual],
       - Select survivors by fitness bands
       - Breed new individuals with crossover + mutation
       - Preserve a small elite
-    Returns new population of same size.
+    Returns new population of same size, with duplicate genomes discouraged.
     """
     if not population:
         raise ValueError("Empty population")
@@ -39,9 +38,19 @@ def run_generation(population: List[Individual],
     survivors = select_survivors(population, evo_cfg)
     pop_size = len(population)
 
+    # Track genomes we've already added (as tuples) to discourage exact duplicates
+    existing_genomes: set[tuple[int, ...]] = set()
+
     # Elites: copy top individuals back into new population
     elites = sort_by_fitness(survivors)[:max(1, int(evo_cfg.elite_fraction * pop_size))]
-    new_pop: List[Individual] = [Individual(genome=list(ind.genome)) for ind in elites]
+    new_pop: List[Individual] = []
+
+    for ind in elites:
+        g_tuple = tuple(ind.genome)
+        if g_tuple in existing_genomes:
+            continue  # already have this genome in new_pop
+        existing_genomes.add(g_tuple)
+        new_pop.append(Individual(genome=list(ind.genome)))
 
     # Breed until we refill the population
     while len(new_pop) < pop_size:
@@ -52,8 +61,20 @@ def run_generation(population: List[Individual],
         g1 = mutate_genome(g1, evo_cfg)
         g2 = mutate_genome(g2, evo_cfg)
 
-        new_pop.append(Individual(genome=g1))
-        if len(new_pop) < pop_size:
-            new_pop.append(Individual(genome=g2))
+        for child_genome in (g1, g2):
+            if len(new_pop) >= pop_size:
+                break
+
+            g_tuple = tuple(child_genome)
+            if g_tuple in existing_genomes:
+                # Try one extra mutation to shake it out of duplication
+                child_genome = mutate_genome(child_genome, evo_cfg)
+                g_tuple = tuple(child_genome)
+                if g_tuple in existing_genomes:
+                    # Still duplicate: skip this child
+                    continue
+
+            existing_genomes.add(g_tuple)
+            new_pop.append(Individual(genome=child_genome))
 
     return new_pop
