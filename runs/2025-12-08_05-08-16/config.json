@@ -1,0 +1,32 @@
+{
+  "evolution": {
+    "pop_size": 1000,
+    "generations_per_guess": 20,
+    "tournament_size": 4,
+    "crossover_rate": 0.9,
+    "mutation_rate": 0.1,
+    "elite_fraction": 0.1,
+    "mid_fraction": 0.3,
+    "commutative_mutation_prob": 0.3
+  },
+  "fitness": {
+    "error_tolerance": 0.0,
+    "value_weight": 1.0,
+    "green_bonus": 20.0,
+    "yellow_bonus": 2.0,
+    "diversity_bonus_per_symbol": 1.0,
+    "diversity_min_symbols": 5,
+    "hard_consistency": true
+  },
+  "solver": {
+    "max_guesses": 6,
+    "max_expr_length": 6,
+    "random_seed": 42,
+    "log_every_generation": true
+  },
+  "autotune": {
+    "num_games": 200,
+    "extra_rounds": 2,
+    "parameter_search_strategy": "grid"
+  }
+}

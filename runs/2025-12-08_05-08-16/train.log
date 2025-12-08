@@ -1,0 +1,4 @@
+[05:08:16] [INFO] [__main__] Starting new run in runs\2025-12-08_05-08-16
+[05:08:16] [INFO] [__main__] Random seed set to 42
+[05:08:16] [INFO] [__main__] Saved config to runs\2025-12-08_05-08-16\config.json
+[05:08:16] [INFO] [__main__] Stage 1 skeleton complete. No solver/evolution yet.
