@@ -6,6 +6,7 @@ from typing import Optional
 @dataclass
 class EvolutionConfig:
     pop_size: int = 1000
+    genome_length: int = 20
     generations_per_guess: int = 20
     tournament_size: int = 4
     crossover_rate: float = 0.9
@@ -28,7 +29,7 @@ class FitnessConfig:
 
 @dataclass
 class SolverConfig:
-    max_guesses: int = 6
+    max_guesses: int = 6          
     max_expr_length: int = 6
     random_seed: Optional[int] = 42
     log_every_generation: bool = True
