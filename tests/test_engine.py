@@ -9,10 +9,7 @@ from engine import (
 )
 from engine.mathler_engine import compute_feedback, ExpressionError
 
-
-# ---------------------------------------------------------------------------
 # safe_eval_expression tests
-# ---------------------------------------------------------------------------
 
 def test_safe_eval_simple_addition():
     assert safe_eval_expression("1+2") == 3
@@ -46,10 +43,7 @@ def test_safe_eval_raises_on_bad_expr():
     with pytest.raises(ExpressionError):
         _ = safe_eval_expression("2+*3")  # invalid syntax
 
-
-# ---------------------------------------------------------------------------
 # compute_feedback tests (simplified GREY/YELLOW/GREEN logic)
-# ---------------------------------------------------------------------------
 
 def test_feedback_all_green():
     secret = "2+3*4"
@@ -84,10 +78,7 @@ def test_feedback_mixed_colors():
     # All others should be YELLOW in this simplified scheme
     assert all(c is not TileColor.GRAY for c in fb)
 
-
-# ---------------------------------------------------------------------------
 # MathlerGame tests
-# ---------------------------------------------------------------------------
 
 def test_game_from_secret_expr_sets_target_and_length():
     game = MathlerGame.from_secret_expr("2+3*4")  # 14
