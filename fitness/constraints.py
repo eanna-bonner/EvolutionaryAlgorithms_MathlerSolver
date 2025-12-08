@@ -1,7 +1,7 @@
 # fitness/constraints.py
 from __future__ import annotations
 
-from typing import List, Set
+from typing import List, Set, Dict
 
 from engine import GuessResult, TileColor
 from engine.mathler_engine import compute_feedback
@@ -21,6 +21,21 @@ def get_forbidden_symbols(history: List[GuessResult]) -> Set[str]:
             if color is TileColor.GRAY:
                 forbidden.add(guess[i])
     return forbidden
+
+def get_known_green_positions(history: List[GuessResult]) -> Dict[int, str]:
+    """
+    From history, gather indices where we have confirmed GREEN tiles.
+    Returns a mapping index -> symbol.
+    """
+    known: Dict[int, str] = {}
+    for res in history:
+        if not res.is_valid:
+            continue
+        guess = res.guess
+        for i, color in enumerate(res.feedback):
+            if color is TileColor.GREEN:
+                known[i] = guess[i]
+    return known
 
 
 def is_expr_compatible_with_history(expr: str,

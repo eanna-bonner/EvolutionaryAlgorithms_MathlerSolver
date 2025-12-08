@@ -5,7 +5,7 @@ from typing import List
 
 from config import FitnessConfig
 from engine import GuessResult, safe_eval_expression
-from .constraints import get_forbidden_symbols  # still useful
+from .constraints import get_forbidden_symbols, get_known_green_positions  # still useful
 
 
 def score_expression(expr: str,
@@ -44,8 +44,15 @@ def score_expression(expr: str,
     num_gray_used = sum(1 for s in expr if s in forbidden)
     if num_gray_used < 3:
         score += cfg.low_gray_bonus
+    
+    # 5) green bonus
+    greens = get_known_green_positions(history)
+    if greens:
+        for idx, ch in greens.items():
+            if idx < len(expr) and expr[idx] == ch:
+                score += cfg.green_bonus
 
-    # 5) Diversity bonus
+    # 6) Diversity bonus
     unique_symbols = len(set(expr))
     if unique_symbols >= cfg.diversity_min_symbols:
         extra = unique_symbols - cfg.diversity_min_symbols + 1
