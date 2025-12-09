@@ -31,7 +31,7 @@ def run_generation(population: List[Individual],
         raise ValueError("Empty population")
 
     # enforce unique phenotypes 
-    population = enforce_uniqueness(population)
+    population = enforce_uniqueness(population, evo_cfg)
 
     # Evaluate current population
     eval_fn(population)

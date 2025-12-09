@@ -16,7 +16,6 @@ def select_survivors(pop: List[Individual],
                      evo_cfg: EvolutionConfig) -> List[Individual]:
     """
     Keep top elite_fraction and a random subset of the next mid_fraction.
-    Matches your 'fitness bands' / leaderboard idea.
     """
     if not pop:
         return []

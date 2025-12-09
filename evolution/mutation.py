@@ -25,12 +25,18 @@ def mutate_genome(genome: List[int],
 
 def hard_mutate_genome(
     genome: List[int],
-    min_char_index: int = 4,   # 0-based: codons 0–3 are structural and dont have an effect on selected characters
+    evo_cfg: EvolutionConfig,   # 0-based: codons 0–3 are structural and dont have an effect on selected characters
 ) -> List[int]:
     """
     Force mutation on at least one gene, preferring character influencing codons
     (indices >= min_char_index).
     """
-    codon_to_mutate = random.randint(min_char_index, len(genome) - 1)
+    min_char_index = evo_cfg.min_char_index
+    rate = evo_cfg.mutation_rate
+    if random.random() < rate:
+        # Mutate a structural codon
+        codon_to_mutate = random.randint(0, min_char_index - 1)
+    else:
+        codon_to_mutate = random.randint(min_char_index, len(genome) - 1)
     genome[codon_to_mutate] += 1
     return genome

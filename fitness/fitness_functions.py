@@ -29,21 +29,26 @@ def score_expression(expr: str,
         value = safe_eval_expression(expr)
     except Exception:
         return float("-inf")
-
+    
+    score = 0.0
     # 2) Value constraint
     diff = abs(value - target_value)
-    if diff > cfg.error_tolerance:
-        return float("-inf")
+    if diff > 0.0:
+        score -= cfg.wrong_value_penalty
+        if diff > cfg.error_tolerance:
+            return float("-inf")
 
     # 3) Base score: closer is better
     score = -diff * cfg.value_weight
-
+    
     # 4) gray-based bonus (soft)
     #    Forbidden = symbols we've seen as GRAY in valid guesses.
     forbidden = get_forbidden_symbols(history)
     num_gray_used = sum(1 for s in expr if s in forbidden)
     if num_gray_used < 3:
         score += cfg.low_gray_bonus
+    else:
+        score -= num_gray_used * (cfg.low_gray_bonus / 2)
     
     # 5) green bonus
     greens = get_known_green_positions(history)
@@ -53,17 +58,17 @@ def score_expression(expr: str,
                 score += cfg.green_bonus
 
     # 6) Diversity bonus
-    # unique_symbols = len(set(expr))
-    # if unique_symbols >= cfg.diversity_min_symbols:
-    #     extra = unique_symbols - cfg.diversity_min_symbols + 1
-    #     score += extra * cfg.diversity_bonus_per_symbol
+    unique_symbols = len(set(expr))
+    if unique_symbols >= cfg.diversity_min_symbols:
+        extra = unique_symbols - cfg.diversity_min_symbols + 1
+        score += extra * cfg.diversity_bonus_per_symbol
 
     # 7) Check history compatibility (hard)
     if not is_expr_compatible_with_history(expr, history):
-        score -= 3
+        score -= cfg.history_incopatibility_penalty
 
     # 8) Check if expr was already guessed (hard)
     for res in history:
         if expr == res.guess:
-            score -= 8  # heavy penalty
+            score -= cfg.repeat_guess_penalty  # heavy penalty
     return score

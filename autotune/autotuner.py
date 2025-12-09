@@ -191,6 +191,8 @@ def run_single_trial(trial_cfg: TrialConfig,
         if history and history[-1].is_correct:
             num_solved += 1
             guesses_list.append(len(history))
+        else:
+            guesses_list.append(local_global.solver.max_guesses + 4) # failed to solve, count as max + 4 (10 guesses)
 
     win_rate = num_solved / num_games if num_games > 0 else 0.0
     avg_guesses = (

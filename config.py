@@ -15,18 +15,20 @@ class EvolutionConfig:
     mutation_rate: float = best_config["evo_mutation_rate"]
     elite_fraction: float = best_config["evo_elite_fraction"]
     mid_fraction: float = best_config["evo_mid_fraction"]
+    min_char_index: int = 4  # 0-based: codons 0–3 are structural and dont have an effect on selected characters
 
 
 @dataclass
 class FitnessConfig:
+    wrong_value_penalty: float = best_config["fit_wrong_value_penalty"]
     error_tolerance: float = best_config["fit_error_tolerance"]       # |v - target| must be <= this
     value_weight: float = best_config["fit_value_weight"]          # -|v - target| * value_weight
     green_bonus: float = best_config["fit_green_bonus"]            # per green symbol
     low_gray_bonus: float = best_config["fit_low_gray_bonus"]        # per gray symbol in lowest third
     diversity_bonus_per_symbol: float = best_config["fit_diversity_bonus_per_symbol"]
     diversity_min_symbols: int = best_config["fit_diversity_min_symbols"]
-    # Inconsistent with history = invalid
-
+    history_incopatibility_penalty: float = best_config["fit_history_incopatibility_penalty"]  # Inconsistent with history
+    repeat_guess_penalty: float = best_config["fit_repeat_guess_penalty"]  # Already guessed
 
 @dataclass
 class SolverConfig:

@@ -14,17 +14,20 @@ class EvolutionTuningRanges:
     elite_fraction: tuple[float, float] = (0.01, 0.15)
     mid_fraction: tuple[float, float] = (0.1, 0.5)
     tournament_size: tuple[int, int] = (2, 6)
+    min_char_index: int = 4  # 0-based: codons 0–3 are structural and dont have an effect on selected characters
 
 
 @dataclass
 class FitnessTuningRanges:
+    wrong_value_penalty: tuple[float, float] = (0.0, 50.0)
     error_tolerance: tuple[float, float] = (10.0, 100.0)
     value_weight: tuple[float, float] = (0.5, 2.0)
     green_bonus: tuple[float, float] = (2.0, 20.0)
     low_gray_bonus: tuple[float, float] = (0.1, 5.0)
     diversity_bonus_per_symbol: tuple[float, float] = (0.0, 3.0)
     diversity_min_symbols: tuple[int, int] = (3, 6)
-    repeat_guess_penalty: tuple[float, float] = (10.0, 100.0)
+    history_incopatibility_penalty: tuple[float, float] = (1.0, 50.0)
+    repeat_guess_penalty: tuple[float, float] = (1.0, 50.0)
 
 
 @dataclass
