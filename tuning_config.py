@@ -1,7 +1,7 @@
 # tuning_config.py
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -32,10 +32,10 @@ class TunerConfig:
     parameter_search_strategy: str = "random"  # or "grid"
     num_trials: int = 200          # how many sampled configs to test
     games_per_trial: int = 20      # how many games per config
-    max_workers: int = 8           # parallel processes
+    max_workers: int = 14           # parallel processes
 
-    evolution_ranges: EvolutionTuningRanges = EvolutionTuningRanges()
-    fitness_ranges: FitnessTuningRanges = FitnessTuningRanges()
+    evolution_ranges: EvolutionTuningRanges = field(default_factory=EvolutionTuningRanges)
+    fitness_ranges: FitnessTuningRanges = field(default_factory=FitnessTuningRanges)
 
 
 GLOBAL_TUNER_CONFIG = TunerConfig()

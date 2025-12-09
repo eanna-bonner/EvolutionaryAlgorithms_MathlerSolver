@@ -1,28 +1,30 @@
 # config.py
 from dataclasses import dataclass, asdict, field
 from typing import Optional
+import json
 
+best_config = json.loads(open("./tunes/best_config.json").read())
 
 @dataclass
 class EvolutionConfig:
-    pop_size: int = 1000
-    genome_length: int = 20
-    generations_per_guess: int = 20
-    tournament_size: int = 4
-    crossover_rate: float = 0.9
-    mutation_rate: float = 0.1
-    elite_fraction: float = 0.1        # Top 10% always kept
-    mid_fraction: float = 0.3          # Next 30% maybe kept
+    pop_size: int = best_config["evo_pop_size"]
+    genome_length: int = best_config["evo_genome_length"]
+    generations_per_guess: int = best_config["evo_generations_per_guess"]
+    tournament_size: int = best_config["evo_tournament_size"]
+    crossover_rate: float = best_config["evo_crossover_rate"]
+    mutation_rate: float = best_config["evo_mutation_rate"]
+    elite_fraction: float = best_config["evo_elite_fraction"]
+    mid_fraction: float = best_config["evo_mid_fraction"]
 
 
 @dataclass
 class FitnessConfig:
-    error_tolerance: float = 0.0       # |v - target| must be <= this
-    value_weight: float = 1.0          # -|v - target| * value_weight
-    green_bonus: float = 15.0
-    low_gray_bonus: float = 2.0
-    diversity_bonus_per_symbol: float = 2.5
-    diversity_min_symbols: int = 5
+    error_tolerance: float = best_config["fit_error_tolerance"]       # |v - target| must be <= this
+    value_weight: float = best_config["fit_value_weight"]          # -|v - target| * value_weight
+    green_bonus: float = best_config["fit_green_bonus"]            # per green symbol
+    low_gray_bonus: float = best_config["fit_low_gray_bonus"]        # per gray symbol in lowest third
+    diversity_bonus_per_symbol: float = best_config["fit_diversity_bonus_per_symbol"]
+    diversity_min_symbols: int = best_config["fit_diversity_min_symbols"]
     # Inconsistent with history = invalid
 
 

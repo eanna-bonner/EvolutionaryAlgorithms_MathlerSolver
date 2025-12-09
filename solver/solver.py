@@ -79,7 +79,6 @@ def solve_mathler_with_evolution(
         # Try the top 5, skipping any that repeat the last valid guess
         candidate = None
         for ind in ranked[:5]:
-            print(ind.expr)
             if ind.expr is None:
                 continue
             if last_valid_guess is not None and ind.expr == last_valid_guess:
@@ -118,5 +117,6 @@ def solve_mathler_with_evolution(
 
     if not game.is_solved():
         logger.info("Failed to solve within %d guesses", game.max_guesses)
+        print(population)
 
     return history

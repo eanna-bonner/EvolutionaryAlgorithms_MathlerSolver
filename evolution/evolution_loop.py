@@ -9,6 +9,7 @@ from evolution.genome import Individual
 from evolution.selection import select_survivors, tournament_select, sort_by_fitness
 from evolution.mutation import mutate_genome
 from evolution.crossover import one_point_crossover
+from fitness.constraints import enforce_uniqueness
 
 logger = get_logger(__name__)
 
@@ -28,6 +29,9 @@ def run_generation(population: List[Individual],
     """
     if not population:
         raise ValueError("Empty population")
+
+    # enforce unique phenotypes 
+    population = enforce_uniqueness(population)
 
     # Evaluate current population
     eval_fn(population)

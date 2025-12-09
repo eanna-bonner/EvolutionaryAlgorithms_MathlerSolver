@@ -183,7 +183,6 @@ def run_single_trial(trial_cfg: TrialConfig,
         start = time.perf_counter()
         history = solve_mathler_with_evolution(
             secret_expr=secret_expr,
-            genome_length=trial_cfg.genome_length,
             global_config=local_global,
         )
         end = time.perf_counter()
