@@ -8,6 +8,7 @@ from logging_config import get_logger
 from engine import MathlerGame, GuessResult
 from evolution import init_population, run_generation, Individual, sort_by_fitness
 from fitness import make_eval_population_mathler
+import time
 
 logger = get_logger(__name__)
 
@@ -15,6 +16,7 @@ logger = get_logger(__name__)
 def solve_mathler_with_evolution(
     secret_expr: str,
     global_config = GLOBAL_CONFIG,
+    metrics = None,
 ) -> List[GuessResult]:
     """
     Solve a single Mathler game using evolutionary search.
@@ -48,9 +50,25 @@ def solve_mathler_with_evolution(
         game.target_value,
     )
 
+    if metrics is not None:
+        metrics.on_game_start(
+            secret_expr=secret_expr,
+            target_value=game.target_value,
+            max_guesses=game.max_guesses,
+            evo_cfg=evo_cfg,
+            fit_cfg=fit_cfg,
+        )
+
+    t_game0 = time.perf_counter()
+
+
     # Game loop: up to max_guesses
     for guess_idx in range(game.max_guesses):
         logger.info("Guess %d / %d", guess_idx + 1, game.max_guesses)
+
+        t_guess0 = time.perf_counter()
+        if metrics is not None:
+            metrics.on_guess_start(guess_idx=guess_idx, history=history)
 
         # Build evaluation function with current history
         eval_fn = make_eval_population_mathler(
@@ -61,7 +79,15 @@ def solve_mathler_with_evolution(
 
         # Run several evolutionary generations before making a guess
         for gen in range(evo_cfg.generations_per_guess):
-            population = run_generation(population, evo_cfg, eval_fn)
+            population = run_generation(
+                population,
+                evo_cfg,
+                eval_fn,
+                guess_idx=guess_idx,
+                gen_idx=gen,
+                metrics=metrics,
+            )
+
 
         # Ensure final population for this guess is evaluated
         eval_fn(population)
@@ -104,6 +130,18 @@ def solve_mathler_with_evolution(
         result = game.make_guess(guess_expr)
         history.append(result)
 
+        guess_runtime_s = time.perf_counter() - t_guess0
+        if metrics is not None:
+            metrics.on_guess_end(
+                guess_idx=guess_idx,
+                guess_expr=guess_expr,
+                guess_fitness=best.fitness,
+                result=result,
+                guess_runtime_s=guess_runtime_s,
+                population=population,
+            )
+
+
         logger.info(
             "Guess result: valid=%s, correct=%s, feedback=%s",
             result.is_valid,
@@ -117,6 +155,10 @@ def solve_mathler_with_evolution(
 
     if not game.is_solved():
         logger.info("Failed to solve within %d guesses", game.max_guesses)
-        print(population)
+
+    total_runtime_s = time.perf_counter() - t_game0
+    if metrics is not None:
+        metrics.on_game_end(history=history, total_runtime_s=total_runtime_s)
+
 
     return history

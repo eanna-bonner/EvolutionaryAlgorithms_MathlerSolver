@@ -10,6 +10,9 @@ from evolution.selection import select_survivors, tournament_select, sort_by_fit
 from evolution.mutation import mutate_genome
 from evolution.crossover import one_point_crossover
 from fitness.constraints import enforce_uniqueness
+import time
+import math
+
 
 logger = get_logger(__name__)
 
@@ -18,7 +21,11 @@ EvalFn = Callable[[List[Individual]], None]
 
 def run_generation(population: List[Individual],
                    evo_cfg: EvolutionConfig,
-                   eval_fn: EvalFn) -> List[Individual]:
+                   eval_fn: EvalFn,
+                   *,
+                   guess_idx: int | None = None,
+                   gen_idx: int | None = None,
+                   metrics=None,) -> List[Individual]:
     """
     Run one evolutionary generation:
       - Evaluate fitness via eval_fn
@@ -29,15 +36,44 @@ def run_generation(population: List[Individual],
     """
     if not population:
         raise ValueError("Empty population")
-
-    # enforce unique phenotypes 
-    population = enforce_uniqueness(population, evo_cfg)
+    
+    t0 = time.perf_counter()
 
     # Evaluate current population
     eval_fn(population)
 
-    best = max(population, key=lambda ind: ind.fitness)
-    logger.info("Best fitness this generation: %.4f", best.fitness)
+    # enforce unique phenotypes and re-evaluate
+    population = enforce_uniqueness(population, evo_cfg)
+    eval_fn(population)
+
+    # Compute fitness stats for this evaluated (and deduped) population
+    fits = [ind.fitness for ind in population if ind.fitness is not None]
+    finite = [f for f in fits if f != float("-inf")]
+
+    fitness_max = max(finite) if finite else float("-inf")
+    fitness_min = min(finite) if finite else float("-inf")
+    fitness_mean = (sum(finite) / len(finite)) if finite else float("-inf")
+    if finite and len(finite) > 1:
+        m = fitness_mean
+        fitness_std = math.sqrt(sum((x - m) ** 2 for x in finite) / (len(finite) - 1))
+    else:
+        fitness_std = 0.0
+
+    gen_runtime_s = time.perf_counter() - t0
+
+    if metrics is not None:
+        metrics.on_generation_end(
+            guess_idx=guess_idx,
+            gen_idx=gen_idx,
+            gen_runtime_s=gen_runtime_s,
+            population=population,
+            fitness_mean=fitness_mean,
+            fitness_max=fitness_max,
+            fitness_min=fitness_min,
+            fitness_std=fitness_std,
+        )
+
+    logger.info("Best fitness this generation: %.4f", fitness_max)
 
     survivors = select_survivors(population, evo_cfg)
     pop_size = len(population)

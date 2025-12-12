@@ -1,0 +1,30 @@
+%start <expr>
+
+<expr> ::= <expr3>
+
+<expr3> ::= <expr2>
+          | <expr2> <add_op> <expr2>
+
+<expr2> ::= <expr1>
+          | <expr1> <add_op> <expr1>
+
+<expr1> ::= <term2>
+          | <term2> <add_op> <term2>
+
+<term2> ::= <term1>
+          | <term1> <mul_op> <term1>
+
+<term1> ::= <factor>
+          | <factor> <mul_op> <factor>
+
+<factor> ::= <number>
+
+<number> ::= <digit>
+          | <digit> <digit>
+          | <digit> <digit> <digit>
+
+<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+<add_op> ::= + | -
+
+<mul_op> ::= * | /

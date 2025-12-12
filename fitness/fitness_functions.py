@@ -30,7 +30,7 @@ def score_expression(expr: str,
     except Exception:
         return float("-inf")
     
-    score = 0.0
+    score = 0.0  # base score (shouldnt go below 0 with penalties, handy for graphing)
     # 2) Value constraint
     diff = abs(value - target_value)
     if diff > 0.0:
@@ -39,7 +39,7 @@ def score_expression(expr: str,
             return float("-inf")
 
     # 3) Base score: closer is better
-    score = -diff * cfg.value_weight
+    # score -= diff * cfg.value_weight
     
     # 4) gray-based bonus (soft)
     #    Forbidden = symbols we've seen as GRAY in valid guesses.
@@ -59,9 +59,10 @@ def score_expression(expr: str,
 
     # 6) Diversity bonus
     unique_symbols = len(set(expr))
-    if unique_symbols >= cfg.diversity_min_symbols:
-        extra = unique_symbols - cfg.diversity_min_symbols + 1
-        score += extra * cfg.diversity_bonus_per_symbol
+    for symbol in set(expr):
+        if symbol in forbidden:
+            unique_symbols -= 1
+    score += unique_symbols * cfg.diversity_bonus_per_symbol
 
     # 7) Check history compatibility (hard)
     if not is_expr_compatible_with_history(expr, history):

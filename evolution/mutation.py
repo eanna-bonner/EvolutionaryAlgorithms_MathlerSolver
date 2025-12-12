@@ -33,7 +33,7 @@ def hard_mutate_genome(
     """
     min_char_index = evo_cfg.min_char_index
     rate = evo_cfg.mutation_rate
-    if random.random() < rate:
+    if random.random() < 2*rate:
         # Mutate a structural codon
         codon_to_mutate = random.randint(0, min_char_index - 1)
     else:
