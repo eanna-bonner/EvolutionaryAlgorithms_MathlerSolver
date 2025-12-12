@@ -1,0 +1,44 @@
+# grammar/mathler_expr6.bnf
+
+%start <expr6>
+
+# Top-level 6-character expression
+<expr6> ::= <tri_expr6_nodiv>
+          | <tri_expr6_div1>
+          | <int6>
+
+# Example of your tri_expr rules (translate the rest similarly)
+<tri_expr6_nodiv> ::= <int1> <addmul_op> <int1> <addmul_op> <int2>
+                    | <int1> <addmul_op> <int2> <addmul_op> <int1>
+                    | <int2> <addmul_op> <int1> <addmul_op> <int1>
+
+<tri_expr6_div1>  ::= <int1> <div_op>   <nz_int1> <addmul_op> <int2>
+                    | <int1> <div_op>   <int2>    <addmul_op> <int1>
+                    | <int2> <div_op>   <nz_int1> <addmul_op> <int1>
+
+# Digits
+<digit>         ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<nonzero_digit> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+# Operators
+<addmul_op> ::= "+" | "-" | "*"
+<div_op>    ::= "/"
+<op>        ::= <addmul_op> | <div_op>
+
+# Integers (examples; copy from your existing GRAMMAR rules)
+<int1>  ::= <digit>
+<nz_int1> ::= <nonzero_digit>
+
+<int2>  ::= <nonzero_digit> <digit>
+
+# Length 3: 100–999 or -10..-99
+<int3>  ::= <nonzero_digit> <digit> <digit>
+          | "-" <nonzero_digit> <digit>
+
+# Length 4: 1000–9999 or -100..-999
+<int4>  ::= <nonzero_digit> <digit> <digit> <digit>
+          | "-" <nonzero_digit> <digit> <digit>
+
+# Length 6: 6-char int option
+<int6>  ::= <nonzero_digit> <digit> <digit> <digit> <digit> <digit>
+          | "-" <nonzero_digit> <digit> <digit> <digit> <digit>

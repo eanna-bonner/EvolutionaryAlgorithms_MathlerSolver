@@ -25,7 +25,7 @@ def mutate_genome(genome: List[int],
 
 def hard_mutate_genome(
     genome: List[int],
-    evo_cfg: EvolutionConfig,   # 0-based: codons 0–3 are structural and dont have an effect on selected characters
+    evo_cfg: EvolutionConfig,   
 ) -> List[int]:
     """
     Force mutation on at least one gene, preferring character influencing codons
