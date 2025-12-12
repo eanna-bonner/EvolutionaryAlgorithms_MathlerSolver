@@ -7,7 +7,7 @@ from utils.rng import seed_everything
 
 
 ALLOWED_CHARS = set("0123456789+-*/")
-GENOME_LENGTH = 20  # tweak this if you like
+GENOME_LENGTH = 20 
 
 
 def format_feedback(feedback):

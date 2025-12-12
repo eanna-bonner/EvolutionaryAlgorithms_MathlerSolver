@@ -163,7 +163,7 @@ def run_single_trial(trial_cfg: TrialConfig,
     seed_everything(1234 + trial_cfg.trial_id)
 
     # Local copy of global config so we don't mutate GLOBAL_CONFIG
-    from config import GlobalConfig  # assuming you have this dataclass
+    from config import GlobalConfig  
     local_global = copy.deepcopy(GLOBAL_CONFIG)
     local_global.evolution = trial_cfg.evolution
     local_global.fitness = trial_cfg.fitness

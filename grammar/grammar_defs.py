@@ -8,7 +8,7 @@ from .bnf_loader import load_bnf, is_nonterminal  # re-export helper
 
 # Locate the BNF file in the same directory
 _THIS_DIR = Path(__file__).resolve().parent
-_BNF_FILE = _THIS_DIR / "mathler_expr6.bnf"
+_BNF_FILE = _THIS_DIR / "mathler_unconstrained.bnf"
 
 # Load at import time
 START_SYMBOL, GRAMMAR, TERMINALS = load_bnf(_BNF_FILE)

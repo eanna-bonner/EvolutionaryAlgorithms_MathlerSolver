@@ -19,10 +19,12 @@ def score_expression(expr: str,
       - must eval successfully
       - |value - target| <= error_tolerance
 
-    Soft terms:
-      - closer to target is better
-      - bonus for using fewer 'gray' symbols from history
-      - diversity bonus for many unique symbols
+    Soft terms:)
+        - bonus for matching known GREEN positions
+        - penalty for incompatibility with history
+        - penalty for repeat guesses
+      - bonus for using fewer gray symbols from history
+      - diversity bonus for many unique, non-forbidden symbols
     """
     # 1) Evaluate
     try:

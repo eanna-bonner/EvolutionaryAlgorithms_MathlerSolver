@@ -1,0 +1,29 @@
+{
+  "run_id": "run_20251212_220235_unconstrained_grammar",
+  "max_guesses": 6,
+  "evolution_config": {
+    "pop_size": 1239,
+    "genome_length": 20,
+    "generations_per_guess": 35,
+    "tournament_size": 4,
+    "crossover_rate": 0.68756863456777,
+    "mutation_rate": 0.23007673243270452,
+    "elite_fraction": 0.07604353060230573,
+    "mid_fraction": 0.3916856727984359,
+    "min_char_index": 4
+  },
+  "fitness_config": {
+    "wrong_value_penalty": 25.37482901234567,
+    "error_tolerance": 74.00445688934916,
+    "value_weight": 0.9466967470370222,
+    "green_bonus": 3.4076858135028565,
+    "low_gray_bonus": 1.3408364368091386,
+    "diversity_bonus_per_symbol": 0.5725466722686324,
+    "diversity_min_symbols": 5,
+    "history_incopatibility_penalty": 15.6789123456789,
+    "repeat_guess_penalty": 32.08521872796858
+  },
+  "env": {
+    "cwd": "C:\\Users\\\u00c9anna Bonner\\Documents\\Programs\\Masters\\Block2\\GeneticProgramming\\EvolutionaryAlgorithms_MathlerSolver"
+  }
+}

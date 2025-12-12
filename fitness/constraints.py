@@ -13,7 +13,7 @@ from config import EvolutionConfig
 def get_forbidden_symbols(history: List[GuessResult]) -> Set[str]:
     """
     From history, collect all symbols that have ever been marked GRAY.
-    With your simplified feedback, GRAY means 'not in secret at all'.
+    GRAY means 'not in secret at all'.
     """
     forbidden: Set[str] = set()
     for res in history:
